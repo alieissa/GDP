@@ -9,7 +9,7 @@
 		$query = "CREATE TABLE IF NOT EXISTS $name (year int, gdp numeric)";
 		$rs = pg_query($dbconn, $query) or die("Couldn't create table");
 	
-		for($year=1988; $year<=2012;$year++){
+		for($year=1988; $year<=2012; $year++){
 			$url = sprintf($wb_url, $code, $year);
 			curl_setopt($wb_curl,  CURLOPT_URL, $url);
 			$result = curl_exec($wb_curl);
@@ -20,23 +20,24 @@
 				
 				$query = "INSERT INTO $name (year, gdp) VALUES ($year, $gdp)";
 				$res = pg_query($dbconn, $query) or die("Couldn't insert values into $name db");
-			}else{
+			}
+			else {
 				die("Unexpected data returned from World Bank");
 			}
 		}
-		
 	}
 	
 	pg_close($dbconn);
 	curl_close($wb_curl);
-	function wbconnect($url){
+	
+	function wbconnect($url) {
 		$curl = curl_init();
-		
+
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 		return $curl;
 	}
 	
-	function dbconnect(){
+	function dbconnect() {
 		$user = "username";
 		$pw = "password";
 		$db = "dbname";
