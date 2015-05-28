@@ -19,31 +19,21 @@
 		<script type="text/javascript">
 			$(function(){
 				var chartDrawn = false;
-				/*var codes = {"ao": "Angola",
-				"bf":"Burkina Faso"};
-				
-				for (countryCode in codes){
-					//console.log("Code:"+countryCode);
-					var host = "http://api.worldbank.org";
-					var path = "/countries/"+countryCode+"/indicators/NY.GDP.PCAP.PP.CD?date=2000&format=JSON";
-					var url = host + path ;
-					
-				}*/
 				var gdp = [];
+				
 				var svg = d3.select("body").append("svg");	
 				var chart = d3.select("body").append("svg")
-							.attr("class", "chart")
-   							.attr("width", 420);     
+					.attr("class", "chart")
+   					.attr("width", 420);     
    							
-   				 
 				var proj = d3.geo.equirectangular().scale(400);							
 				var path = d3.geo.path().projection(proj);
 				
-				
-				d3.json("/data/Africa.json", function(error, dataset){
+				d3.json("/data/Africa.json", function(error, dataset) {
 					if(error){
 						alert("Error: Unable to load data")
-					}else{
+					}
+					else {
 						//console.log(dataset)
 						svg.selectAll("path")	
 						.data(dataset.features)
@@ -65,50 +55,44 @@
 					d3.select(this).style("fill","teal");
 				}
 				
-				var clicked = function (d){
+				var clicked = function (d) {
 					$.ajax({
 						url:"getgdp.php",
 						type: "GET",
-						data: "country_code="+d.properties.iso_a2,
-						error: function(error){
-							console.log("Error:"+JSON.stringify(error));
+						data: "country_code=" + d.properties.iso_a2,
+						error: function(error) {
+							console.log("Error:" + JSON.stringify(error));
 						},
-						success: function(data){
-							//console.log(Object.keys(data));
+						success: function(data) {
 							gdp = JSON.parse(data);
 							chart.attr("height", 20 * gdp.length);
 							var x = d3.scale.linear()
      							.domain([0, d3.max(gdp)])
      							.range([0, 420]);
-     						if(!chartDrawn){
+     						if(!chartDrawn) {
      							chart.selectAll("rect")
-									.data(gdp)
-								   	.enter().append("rect")
-									.attr("y", function(d, i) { return i * 20; })
-									.attr("width", x)
-									.attr("height", 20);
+								.data(gdp)
+							   	.enter().append("rect")
+								.attr("y", function(d, i) { return i * 20; })
+								.attr("width", x)
+								.attr("height", 20);
 									
-									chartDrawn = true;
-     						}else {
+							chartDrawn = true;
+     						}
+     						else {
      							chart.selectAll("path")
    									.data(gdp) // set the new data
    									.attr("d", "path"); 
-   									
      						}
-     							
-									
-							console.log("GDP:"+gdp[0]);
+     						
+							//console.log("GDP:"+gdp[0]);
 						}
 					});
-					//alert(d.properties.iso_a2);
 				}
-				
 			});
 		</script>
 	</head>
-	
 	<body>
-		<!--div style = "width: 50%; height:100%; float: left; background-color: #000"></div-->
 		
 	</body>
 
